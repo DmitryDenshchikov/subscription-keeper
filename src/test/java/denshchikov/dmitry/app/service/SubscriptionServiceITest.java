@@ -92,6 +92,7 @@ class SubscriptionServiceITest {
         // Given
         UUID userId = UUID.randomUUID();
         LocalDateTime subscriptionEndDateTime = currentUTC();
+
         Subscription savedSubscription = aSubscription(userId);
         jdbcAggregateTemplate.insert(savedSubscription);
 
@@ -115,6 +116,22 @@ class SubscriptionServiceITest {
                         savedSubscription.getStartedOn(),
                         subscriptionEndDateTime
                 );
+    }
+
+    @Test
+    void endSubscription_should_ThrowException_When_SubscriptionAlreadyInactive() {
+        // Given
+        UUID userId = UUID.randomUUID();
+        LocalDateTime subscriptionEndDateTime = currentUTC();
+
+        Subscription savedSubscription = aSubscription(userId);
+        savedSubscription.setEndedOn(currentUTC());
+
+        jdbcAggregateTemplate.insert(savedSubscription);
+
+        // When & Then
+        thenThrownBy(() -> subscriptionService.endSubscription(userId, subscriptionEndDateTime.atZone(UTC)))
+                .isInstanceOf(RuntimeException.class);
     }
 
     @Test

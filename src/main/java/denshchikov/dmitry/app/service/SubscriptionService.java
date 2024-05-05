@@ -44,6 +44,10 @@ public class SubscriptionService {
         Subscription subscription = subscriptionRepository.findByUserIdForUpdate(userId)
                 .orElseThrow(() -> new RuntimeException("No subscription found for user " + userId));
 
+        if (subscription.getEndedOn() != null) {
+            throw new IllegalStateException("Subscription is already inactive for user " + userId);
+        }
+
         subscription.setEndedOn(toUTC(endDateTime));
 
         subscription = subscriptionRepository.save(subscription);
@@ -60,7 +64,7 @@ public class SubscriptionService {
                 .orElseThrow(() -> new RuntimeException("No subscription found for user " + userId));
 
         if (subscription.getEndedOn() == null) {
-            throw new IllegalStateException("Subscription is active for user " + userId);
+            throw new IllegalStateException("Subscription is already active for user " + userId);
         }
 
         subscription.setStartedOn(toUTC(startDateTime));
