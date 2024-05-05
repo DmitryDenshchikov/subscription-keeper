@@ -20,7 +20,6 @@ import java.util.*;
 
 import static denshchikov.dmitry.app.constant.MediaType.*;
 import static denshchikov.dmitry.app.util.DateUtils.toUTC;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/subscriptions")
@@ -34,12 +33,10 @@ public class SubscriptionController {
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
             @ApiResponse(
                     responseCode = "500",
-                    content = {
-                            @Content(mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ErrorResponse.class))}
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}
             )
     })
-    @PostMapping(consumes = CREATING_SUBSCRIPTION, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = CREATING_SUBSCRIPTION, produces = CREATED_SUBSCRIPTION)
     public SuccessResponse<SubscriptionCreatedResponse> storeSubscription(@RequestBody @Valid CreateSubscriptionRequest req) {
         Subscription subscription = subscriptionService.createSubscription(req.getUserId(), req.getStartDateTime());
 
@@ -57,12 +54,10 @@ public class SubscriptionController {
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
             @ApiResponse(
                     responseCode = "500",
-                    content = {
-                            @Content(mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ErrorResponse.class))}
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}
             )
     })
-    @GetMapping(path = "/users/{userId}", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/users/{userId}", produces = SUBSCRIPTION_STATUS)
     public SuccessResponse<SubscriptionStatusResponse> getSubscriptionStatus(@PathVariable("userId") UUID userId) {
         boolean isSubscribed = subscriptionService.isSubscribed(userId);
 
@@ -77,12 +72,10 @@ public class SubscriptionController {
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
             @ApiResponse(
                     responseCode = "500",
-                    content = {
-                            @Content(mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ErrorResponse.class))}
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}
             )
     })
-    @PatchMapping(path = "/users/{userId}", consumes = REACTIVATING_SUBSCRIPTION, produces = APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/users/{userId}", consumes = REACTIVATING_SUBSCRIPTION, produces = REACTIVATED_SUBSCRIPTION)
     public SuccessResponse<SubscriptionReactivatedResponse> resubscribeUser(@PathVariable("userId") UUID userId,
                                                                             @RequestBody @Valid ReactivateSubscriptionRequest req) {
         Subscription subscription = subscriptionService.resubscribeUser(userId, req.getStartDateTime());
@@ -101,12 +94,10 @@ public class SubscriptionController {
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
             @ApiResponse(
                     responseCode = "500",
-                    content = {
-                            @Content(mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ErrorResponse.class))}
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}
             )
     })
-    @PatchMapping(path = "/users/{userId}", consumes = ENDING_SUBSCRIPTION, produces = APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/users/{userId}", consumes = ENDING_SUBSCRIPTION, produces = ENDED_SUBSCRIPTION)
     public SuccessResponse<SubscriptionEndedResponse> endSubscription(@PathVariable("userId") UUID userId,
                                                                       @RequestBody @Valid EndSubscriptionRequest req) {
         Subscription subscription = subscriptionService.endSubscription(userId, req.getEndDateTime());
