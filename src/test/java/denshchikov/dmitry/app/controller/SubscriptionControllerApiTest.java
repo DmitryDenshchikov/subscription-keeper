@@ -50,7 +50,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = post("/subscriptions")
+            MockHttpServletRequestBuilder requestBuilder = post("/v1/subscriptions")
                     .accept(CREATED_SUBSCRIPTION)
                     .contentType(CREATING_SUBSCRIPTION)
                     .content(requestStr);
@@ -90,7 +90,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = post("/subscriptions")
+            MockHttpServletRequestBuilder requestBuilder = post("/v1/subscriptions")
                     .accept(CREATED_SUBSCRIPTION)
                     .contentType(CREATING_SUBSCRIPTION)
                     .content(requestStr);
@@ -124,7 +124,7 @@ class SubscriptionControllerApiTest {
             // Given
             UUID userId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
 
-            MockHttpServletRequestBuilder requestBuilder = get("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/subscriptions/users/" + userId)
                     .accept(SUBSCRIPTION_STATUS);
 
             given(subscriptionService.isSubscribed(userId)).willReturn(true);
@@ -147,7 +147,7 @@ class SubscriptionControllerApiTest {
             // Given
             UUID userId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
 
-            MockHttpServletRequestBuilder requestBuilder = get("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/subscriptions/users/" + userId)
                     .accept(SUBSCRIPTION_STATUS);
 
             given(subscriptionService.isSubscribed(userId)).willReturn(false);
@@ -175,7 +175,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(REACTIVATED_SUBSCRIPTION)
                     .contentType(REACTIVATING_SUBSCRIPTION)
                     .content(requestStr);
@@ -215,7 +215,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(REACTIVATED_SUBSCRIPTION)
                     .contentType(REACTIVATING_SUBSCRIPTION)
                     .content(requestStr);
@@ -255,7 +255,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(ENDED_SUBSCRIPTION)
                     .contentType(ENDING_SUBSCRIPTION)
                     .content(requestStr);
@@ -299,7 +299,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(ENDED_SUBSCRIPTION)
                     .contentType(ENDING_SUBSCRIPTION)
                     .content(requestStr);
@@ -344,7 +344,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = post("/subscriptions")
+            MockHttpServletRequestBuilder requestBuilder = post("/v1/subscriptions")
                     .accept(CREATED_SUBSCRIPTION)
                     .contentType(CREATING_SUBSCRIPTION)
                     .content(requestStr);
@@ -360,7 +360,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = post("/subscriptions")
+            MockHttpServletRequestBuilder requestBuilder = post("/v1/subscriptions")
                     .accept(CREATED_SUBSCRIPTION)
                     .contentType(CREATING_SUBSCRIPTION)
                     .content(requestStr);
@@ -372,7 +372,7 @@ class SubscriptionControllerApiTest {
         @Test
         void should_Return400_When_GettingSubscriptionStatusUserIdIsNotUUID() throws Exception {
             // Given
-            MockHttpServletRequestBuilder requestBuilder = get("/subscriptions/users/12345")
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/subscriptions/users/12345")
                     .accept(SUBSCRIPTION_STATUS);
 
             // When & Then
@@ -388,7 +388,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/12345")
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/12345")
                     .accept(REACTIVATED_SUBSCRIPTION)
                     .contentType(REACTIVATING_SUBSCRIPTION)
                     .content(requestStr);
@@ -404,7 +404,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/3fa85f64-5717-4562-b3fc-2c963f66afa6")
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/3fa85f64-5717-4562-b3fc-2c963f66afa6")
                     .accept(REACTIVATED_SUBSCRIPTION)
                     .contentType(REACTIVATING_SUBSCRIPTION)
                     .content(requestStr);
@@ -423,7 +423,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/1234")
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/1234")
                     .accept(ENDED_SUBSCRIPTION)
                     .contentType(ENDING_SUBSCRIPTION)
                     .content(requestStr);
@@ -441,7 +441,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(ENDED_SUBSCRIPTION)
                     .contentType(ENDING_SUBSCRIPTION)
                     .content(requestStr);
@@ -465,7 +465,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = post("/subscriptions")
+            MockHttpServletRequestBuilder requestBuilder = post("/v1/subscriptions")
                     .accept(CREATED_SUBSCRIPTION)
                     .contentType(CREATING_SUBSCRIPTION)
                     .content(requestStr);
@@ -482,7 +482,7 @@ class SubscriptionControllerApiTest {
             // Given
             UUID userId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
 
-            MockHttpServletRequestBuilder requestBuilder = get("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/subscriptions/users/" + userId)
                     .accept(SUBSCRIPTION_STATUS);
 
             given(subscriptionService.isSubscribed(userId)).willThrow(RuntimeException.class);
@@ -501,7 +501,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(REACTIVATED_SUBSCRIPTION)
                     .contentType(REACTIVATING_SUBSCRIPTION)
                     .content(requestStr);
@@ -522,7 +522,7 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(ENDED_SUBSCRIPTION)
                     .contentType(ENDING_SUBSCRIPTION)
                     .content(requestStr);

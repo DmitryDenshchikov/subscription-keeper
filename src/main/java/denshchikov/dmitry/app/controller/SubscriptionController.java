@@ -22,7 +22,7 @@ import static denshchikov.dmitry.app.constant.MediaType.*;
 import static denshchikov.dmitry.app.util.DateUtils.toUTC;
 
 @RestController
-@RequestMapping("/subscriptions")
+@RequestMapping("/v1/subscriptions")
 @RequiredArgsConstructor
 public class SubscriptionController {
 
