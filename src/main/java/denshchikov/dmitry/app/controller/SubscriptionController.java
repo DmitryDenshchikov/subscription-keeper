@@ -19,6 +19,8 @@ import javax.validation.Valid;
 import java.util.*;
 
 import static denshchikov.dmitry.app.constant.MediaType.*;
+import static denshchikov.dmitry.app.model.response.subscription.SubscriptionStatus.SUBSCRIBED;
+import static denshchikov.dmitry.app.model.response.subscription.SubscriptionStatus.UNSUBSCRIBED;
 import static denshchikov.dmitry.app.util.DateUtils.toUTC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -38,12 +40,11 @@ public class SubscriptionController {
     public SuccessResponse<SubscriptionResponse> storeSubscription(@RequestBody @Valid CreateSubscriptionRequest req) {
         Subscription subscription = subscriptionService.createSubscription(req.getUserId(), req.getStartDateTime());
 
-        SubscriptionResponse response = new SubscriptionResponse(
-                subscription.getId(),
-                subscription.getUserId(),
-                toUTC(subscription.getStartedOn()),
-                null
-        );
+        SubscriptionResponse response = SubscriptionResponse.builder()
+                .id(subscription.getId())
+                .userId(subscription.getUserId())
+                .startedOn(toUTC(subscription.getStartedOn()))
+                .build();
 
         return new SuccessResponse<>(response);
     }
@@ -57,8 +58,9 @@ public class SubscriptionController {
     public SuccessResponse<SubscriptionStatusResponse> getSubscriptionStatus(@PathVariable("userId") UUID userId) {
         boolean isSubscribed = subscriptionService.isSubscribed(userId);
 
-        SubscriptionStatusResponse response = new SubscriptionStatusResponse(
-                isSubscribed ? SubscriptionStatus.SUBSCRIBED : SubscriptionStatus.UNSUBSCRIBED);
+        SubscriptionStatusResponse response = SubscriptionStatusResponse.builder()
+                .subscriptionStatus(isSubscribed ? SUBSCRIBED : UNSUBSCRIBED)
+                .build();
 
         return new SuccessResponse<>(response);
     }
@@ -73,12 +75,11 @@ public class SubscriptionController {
                                                                  @RequestBody @Valid ReactivateSubscriptionRequest req) {
         Subscription subscription = subscriptionService.resubscribeUser(userId, req.getStartDateTime());
 
-        SubscriptionResponse response = new SubscriptionResponse(
-                subscription.getId(),
-                subscription.getUserId(),
-                toUTC(subscription.getStartedOn()),
-                null
-        );
+        SubscriptionResponse response = SubscriptionResponse.builder()
+                .id(subscription.getId())
+                .userId(subscription.getUserId())
+                .startedOn(toUTC(subscription.getStartedOn()))
+                .build();
 
         return new SuccessResponse<>(response);
     }
@@ -93,12 +94,12 @@ public class SubscriptionController {
                                                                  @RequestBody @Valid EndSubscriptionRequest req) {
         Subscription subscription = subscriptionService.endSubscription(userId, req.getEndDateTime());
 
-        SubscriptionResponse response = new SubscriptionResponse(
-                subscription.getId(),
-                subscription.getUserId(),
-                toUTC(subscription.getStartedOn()),
-                toUTC(subscription.getEndedOn())
-        );
+        SubscriptionResponse response = SubscriptionResponse.builder()
+                .id(subscription.getId())
+                .userId(subscription.getUserId())
+                .startedOn(toUTC(subscription.getStartedOn()))
+                .endedOn(toUTC(subscription.getEndedOn()))
+                .build();
 
         return new SuccessResponse<>(response);
     }

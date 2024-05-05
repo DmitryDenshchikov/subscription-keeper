@@ -2,7 +2,7 @@ package denshchikov.dmitry.app.model.response.subscription;
 
 import lombok.*;
 
-@RequiredArgsConstructor
+@Builder
 @Getter
 @EqualsAndHashCode
 @ToString

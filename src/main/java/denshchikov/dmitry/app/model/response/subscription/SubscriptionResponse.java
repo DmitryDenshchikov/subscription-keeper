@@ -1,14 +1,11 @@
 package denshchikov.dmitry.app.model.response.subscription;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-@RequiredArgsConstructor
+@Builder
 @Getter
 @EqualsAndHashCode
 @ToString
