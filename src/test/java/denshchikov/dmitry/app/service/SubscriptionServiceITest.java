@@ -60,6 +60,20 @@ class SubscriptionServiceITest {
     }
 
     @Test
+    void createSubscription_Should_ThrowException_When_SubscriptionForGivenUserAlreadyExists() {
+        // Given
+        UUID userId = UUID.randomUUID();
+        LocalDateTime subscriptionStartDateTime = currentUTC();
+
+        // When
+        subscriptionService.createSubscription(userId, subscriptionStartDateTime.atZone(UTC));
+
+        // Then
+        thenThrownBy(() -> subscriptionService.createSubscription(userId, subscriptionStartDateTime.atZone(UTC)))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
     void createSubscription_Should_ThrowException_When_UserIdIsNotProvided() {
         // Given & When & Then
         thenThrownBy(() -> subscriptionService.createSubscription(null, ZonedDateTime.now(UTC)))
