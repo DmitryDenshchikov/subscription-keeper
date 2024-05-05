@@ -1,6 +1,5 @@
 package denshchikov.dmitry.app.controller;
 
-import denshchikov.dmitry.app.constant.MediaType;
 import denshchikov.dmitry.app.model.domain.Subscription;
 import denshchikov.dmitry.app.model.request.CreateSubscriptionRequest;
 import denshchikov.dmitry.app.model.request.ReactivateSubscriptionRequest;
