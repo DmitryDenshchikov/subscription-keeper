@@ -1,8 +1,6 @@
 package denshchikov.dmitry.app.model.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -10,29 +8,26 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("subscription")
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(of = "id")
+@Table
 public class Subscription {
 
     @Id
-    @Column("id")
+    @Column
     private UUID id;
 
-    @Column("user_id")
+    @Column
     private UUID userId;
 
-    @Column("started_on")
+    @Column
     private LocalDateTime startedOn;
 
-    @Column("ended_on")
+    @Column
     private LocalDateTime endedOn;
-
-    @Column("created_on")
-    private LocalDateTime createdOn;
-
-    @Column("updated_on")
-    private LocalDateTime updatedOn;
 
 }

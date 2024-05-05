@@ -24,7 +24,7 @@ public class SubscriptionController {
 
     @PostMapping
     public SuccessResponse<SubscriptionResponse> storeSubscription(@RequestBody CreateSubscriptionRequest req) {
-        Subscription subscription = subscriptionService.createSubscriptionAndUser(req.getUserId(), req.getStartDateTime());
+        Subscription subscription = subscriptionService.createSubscription(req.getUserId(), req.getStartDateTime());
 
         SubscriptionResponse response = new SubscriptionResponse(
                 subscription.getId(), subscription.getUserId(), subscription.getStartedOn(), subscription.getEndedOn()
@@ -43,7 +43,7 @@ public class SubscriptionController {
         return new SuccessResponse<>(response);
     }
 
-    @PutMapping("/users/{userId}")
+    @PatchMapping("/users/{userId}")
     public SuccessResponse<SubscriptionResponse> resubscribeUser(@PathVariable("userId") UUID userId,
                                                                  @RequestBody ResubscribeUserRequest req) {
         Subscription subscription = subscriptionService.resubscribeUser(userId, req.getStartDateTime());
@@ -54,7 +54,6 @@ public class SubscriptionController {
 
         return new SuccessResponse<>(response);
     }
-
 
     @DeleteMapping("/users/{userId}")
     public SuccessResponse<SubscriptionResponse> removeSubscription(@PathVariable("userId") UUID userId,
@@ -67,6 +66,5 @@ public class SubscriptionController {
 
         return new SuccessResponse<>(response);
     }
-
 
 }

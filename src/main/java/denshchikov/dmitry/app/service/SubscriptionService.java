@@ -1,7 +1,6 @@
 package denshchikov.dmitry.app.service;
 
 import denshchikov.dmitry.app.model.domain.Subscription;
-import denshchikov.dmitry.app.model.domain.User;
 import denshchikov.dmitry.app.repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
@@ -9,10 +8,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static denshchikov.dmitry.app.util.DateUtils.currentUTC;
 import static denshchikov.dmitry.app.util.DateUtils.toUTC;
 
 @Component
@@ -23,29 +22,29 @@ public class SubscriptionService {
     private final JdbcAggregateTemplate jdbcAggregateTemplate;
 
     @Transactional
-    public Subscription createSubscriptionAndUser(UUID userId, ZonedDateTime startDateTime) {
-        User user = new User(userId, currentUTC(), currentUTC());
-        jdbcAggregateTemplate.insert(user);
+    public Subscription createSubscription(UUID userId, ZonedDateTime startDateTime) {
+        Objects.requireNonNull(userId, "User Id must not be null");
+        Objects.requireNonNull(startDateTime, "Subscription start date must not be null");
 
         Subscription subscription = new Subscription();
         subscription.setId(UUID.randomUUID());
         subscription.setUserId(userId);
         subscription.setStartedOn(toUTC(startDateTime));
-        subscription.setCreatedOn(currentUTC());
-        subscription.setUpdatedOn(currentUTC());
 
-        jdbcAggregateTemplate.insert(subscription);
+        subscription = jdbcAggregateTemplate.insert(subscription);
 
         return subscription;
     }
 
     @Transactional
     public Subscription unsubscribeUser(UUID userId, ZonedDateTime endDateTime) {
+        Objects.requireNonNull(userId, "User Id must not be null");
+        Objects.requireNonNull(endDateTime, "Subscription end date must not be null");
+
         Subscription subscription = subscriptionRepository.findByUserIdForUpdate(userId)
                 .orElseThrow(() -> new RuntimeException("No subscription found for user " + userId));
 
         subscription.setEndedOn(toUTC(endDateTime));
-        subscription.setUpdatedOn(currentUTC());
 
         subscription = subscriptionRepository.save(subscription);
 
@@ -54,12 +53,14 @@ public class SubscriptionService {
 
     @Transactional
     public Subscription resubscribeUser(UUID userId, ZonedDateTime startDateTime) {
+        Objects.requireNonNull(userId, "User Id must not be null");
+        Objects.requireNonNull(startDateTime, "Subscription start date must not be null");
+
         Subscription subscription = subscriptionRepository.findByUserIdForUpdate(userId)
                 .orElseThrow(() -> new RuntimeException("No subscription found for user " + userId));
 
         subscription.setStartedOn(toUTC(startDateTime));
         subscription.setEndedOn(null);
-        subscription.setUpdatedOn(currentUTC());
 
         subscription = subscriptionRepository.save(subscription);
 
@@ -67,9 +68,11 @@ public class SubscriptionService {
     }
 
     public boolean isSubscribed(UUID userId) {
+        Objects.requireNonNull(userId, "User Id must not be null");
+
         Optional<Subscription> subscription = subscriptionRepository.findByUserId(userId);
 
-        return subscription.isPresent();
+        return subscription.isPresent() && subscription.get().getEndedOn() == null;
     }
 
 }

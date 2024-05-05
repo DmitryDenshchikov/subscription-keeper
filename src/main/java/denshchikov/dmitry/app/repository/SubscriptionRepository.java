@@ -14,7 +14,7 @@ public interface SubscriptionRepository extends CrudRepository<Subscription, UUI
 
     Optional<Subscription> findByUserId(UUID userId);
 
-    @Query("select * from subscription s where s.user_id = :user_id FOR UPDATE")
+    @Query("select * from SUBSCRIPTION s where s.user_id = :user_id FOR UPDATE")
     Optional<Subscription> findByUserIdForUpdate(@Param("user_id") UUID userId);
 
 }
