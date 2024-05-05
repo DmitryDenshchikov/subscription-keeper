@@ -37,7 +37,7 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public Subscription unsubscribeUser(UUID userId, ZonedDateTime endDateTime) {
+    public Subscription endSubscription(UUID userId, ZonedDateTime endDateTime) {
         Objects.requireNonNull(userId, "User Id must not be null");
         Objects.requireNonNull(endDateTime, "Subscription end date must not be null");
 
@@ -58,6 +58,10 @@ public class SubscriptionService {
 
         Subscription subscription = subscriptionRepository.findByUserIdForUpdate(userId)
                 .orElseThrow(() -> new RuntimeException("No subscription found for user " + userId));
+
+        if (subscription.getEndedOn() == null) {
+            throw new IllegalStateException("Subscription is active for user " + userId);
+        }
 
         subscription.setStartedOn(toUTC(startDateTime));
         subscription.setEndedOn(null);

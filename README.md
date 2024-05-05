@@ -1,7 +1,9 @@
 # General Information
-* You can run 
+* Build and test the app: `./gradlew clean build`
+* Run app: `./gradlew bootRun`
+* REST APIs definition (OpenAPI): http://localhost:8080/v3/api-docs
 * Swagger: http://localhost:8080/swagger-ui/index.html
-* H2 console: http://localhost:8080/h2-console
+* H2 console: http://localhost:8080/h2-console (default username and password; url: `jdbc:h2:mem:testdb`)
 
 
 # What I would've done if I had had a bit more time
@@ -14,3 +16,8 @@
 - More detailed exceptions
 - Add a table for users
 - Multiple different subscriptions
+- Using env vars to inject passwords and usernames and urls
+- Better exception handling
+- Profiles
+- Cutom media types for versioning
+- Create a common swagger config

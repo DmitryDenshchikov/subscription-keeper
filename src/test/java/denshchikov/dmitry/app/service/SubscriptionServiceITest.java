@@ -34,7 +34,7 @@ class SubscriptionServiceITest {
     SubscriptionService subscriptionService;
 
     @Test
-    void createSubscription_Should_CreateUserAndSubscription_When_CorrectDataProvidedAndNoErrorsOccurred() {
+    void createSubscription_Should_CreateSubscription_When_CorrectDataProvidedAndNoErrorsOccurred() {
         // Given
         UUID userId = UUID.randomUUID();
         LocalDateTime subscriptionStartDateTime = currentUTC();
@@ -74,7 +74,7 @@ class SubscriptionServiceITest {
     }
 
     @Test
-    void unsubscribeUser_should_UnsubscribeUser_When_CorrectDataProvidedAndNoErrorsOccurred() {
+    void endSubscription_should_endSubscription_When_CorrectDataProvidedAndNoErrorsOccurred() {
         // Given
         UUID userId = UUID.randomUUID();
         LocalDateTime subscriptionEndDateTime = currentUTC();
@@ -82,7 +82,7 @@ class SubscriptionServiceITest {
         jdbcAggregateTemplate.insert(savedSubscription);
 
         // When
-        Subscription subscription = subscriptionService.unsubscribeUser(userId,
+        Subscription subscription = subscriptionService.endSubscription(userId,
                 subscriptionEndDateTime.atZone(UTC));
 
         // Then
@@ -104,33 +104,35 @@ class SubscriptionServiceITest {
     }
 
     @Test
-    void unsubscribeUser_should_ThrowException_When_NoSubscriptionFound() {
+    void endSubscription_should_ThrowException_When_NoSubscriptionFound() {
         // Given & When & Then
-        thenThrownBy(() -> subscriptionService.unsubscribeUser(UUID.randomUUID(), ZonedDateTime.now(UTC)))
+        thenThrownBy(() -> subscriptionService.endSubscription(UUID.randomUUID(), ZonedDateTime.now(UTC)))
                 .isInstanceOf(RuntimeException.class);
     }
 
     @Test
-    void unsubscribeUser_should_ThrowException_When_UserIdIsNotProvided() {
+    void endSubscription_should_ThrowException_When_UserIdIsNotProvided() {
         // Given & When & Then
-        thenThrownBy(() -> subscriptionService.unsubscribeUser(null, ZonedDateTime.now(UTC)))
+        thenThrownBy(() -> subscriptionService.endSubscription(null, ZonedDateTime.now(UTC)))
                 .isInstanceOf(RuntimeException.class);
     }
 
     @Test
-    void unsubscribeUser_should_ThrowException_When_StartDateIsNotProvided() {
+    void endSubscription_should_ThrowException_When_StartDateIsNotProvided() {
         // Given & When & Then
-        thenThrownBy(() -> subscriptionService.unsubscribeUser(UUID.randomUUID(), null))
+        thenThrownBy(() -> subscriptionService.endSubscription(UUID.randomUUID(), null))
                 .isInstanceOf(RuntimeException.class);
     }
 
-
     @Test
-    void resubscribeUser_should_UnsubscribeUser_When_CorrectDataProvidedAndNoErrorsOccurred() {
+    void resubscribeUser_should_endSubscription_When_CorrectDataProvidedAndNoErrorsOccurred() {
         // Given
         UUID userId = UUID.randomUUID();
         LocalDateTime subscriptionStartDateTime = currentUTC();
+
         Subscription savedSubscription = aSubscription(userId);
+        savedSubscription.setEndedOn(currentUTC());
+
         jdbcAggregateTemplate.insert(savedSubscription);
 
         // When
@@ -153,6 +155,20 @@ class SubscriptionServiceITest {
                         subscriptionStartDateTime,
                         null
                 );
+    }
+
+    @Test
+    void resubscribeUser_should_ThrowException_When_SubscriptionIsActive() {
+        // Given
+        UUID userId = UUID.randomUUID();
+        LocalDateTime subscriptionStartDateTime = currentUTC();
+
+        Subscription savedSubscription = aSubscription(userId);
+        jdbcAggregateTemplate.insert(savedSubscription);
+
+        // When & Then
+        thenThrownBy(() -> subscriptionService.resubscribeUser(userId, subscriptionStartDateTime.atZone(UTC)))
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @Test

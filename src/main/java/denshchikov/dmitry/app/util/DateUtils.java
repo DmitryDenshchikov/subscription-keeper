@@ -1,9 +1,10 @@
 package denshchikov.dmitry.app.util;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+
+import static java.time.ZoneOffset.UTC;
 
 public final class DateUtils {
 
@@ -12,11 +13,15 @@ public final class DateUtils {
     }
 
     public static LocalDateTime currentUTC() {
-        return LocalDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS);
+        return LocalDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS);
     }
 
     public static LocalDateTime toUTC(ZonedDateTime zonedDateTime) {
-        return zonedDateTime.withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
+        return zonedDateTime.withZoneSameInstant(UTC).toLocalDateTime();
+    }
+
+    public static ZonedDateTime toUTC(LocalDateTime localDateTime) {
+        return localDateTime.atZone(UTC);
     }
 
 }

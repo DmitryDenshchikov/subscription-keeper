@@ -1,4 +1,4 @@
-package denshchikov.dmitry.app.model.response;
+package denshchikov.dmitry.app.model.response.subscription;
 
 import lombok.*;
 

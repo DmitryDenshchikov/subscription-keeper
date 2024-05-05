@@ -49,7 +49,7 @@ class SubscriptionServiceUTest {
         given(subscriptionRepository.save(any(Subscription.class))).willThrow(RuntimeException.class);
 
         // When & Then
-        thenThrownBy(() -> subscriptionService.unsubscribeUser(userId, currentUTC().atZone(UTC)))
+        thenThrownBy(() -> subscriptionService.endSubscription(userId, currentUTC().atZone(UTC)))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -61,7 +61,7 @@ class SubscriptionServiceUTest {
         given(subscriptionRepository.findByUserIdForUpdate(userId)).willThrow(RuntimeException.class);
 
         // When & Then
-        thenThrownBy(() -> subscriptionService.unsubscribeUser(userId, currentUTC().atZone(UTC)))
+        thenThrownBy(() -> subscriptionService.endSubscription(userId, currentUTC().atZone(UTC)))
                 .isInstanceOf(RuntimeException.class);
     }
 

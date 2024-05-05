@@ -16,7 +16,7 @@ import static denshchikov.dmitry.app.constant.ErrorCode.TECHNICAL_ERROR;
 public class ExceptionController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleAccessDeniedException(Exception e) {
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error(e.getMessage(), e);
 
         ErrorDetails errorDetails = new ErrorDetails(TECHNICAL_ERROR.getCode(), TECHNICAL_ERROR.getDescription());
