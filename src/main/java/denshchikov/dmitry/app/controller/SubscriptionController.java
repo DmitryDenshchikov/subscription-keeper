@@ -20,6 +20,7 @@ import java.util.*;
 
 import static denshchikov.dmitry.app.constant.MediaType.*;
 import static denshchikov.dmitry.app.util.DateUtils.toUTC;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/v1/subscriptions")
@@ -31,16 +32,17 @@ public class SubscriptionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription data"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
-            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+            @ApiResponse(responseCode = "500", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @PostMapping(consumes = CREATING_SUBSCRIPTION, produces = CREATED_SUBSCRIPTION)
-    public SuccessResponse<SubscriptionCreatedResponse> storeSubscription(@RequestBody @Valid CreateSubscriptionRequest req) {
+    @PostMapping(consumes = CREATING_SUBSCRIPTION, produces = SUBSCRIPTION)
+    public SuccessResponse<SubscriptionResponse> storeSubscription(@RequestBody @Valid CreateSubscriptionRequest req) {
         Subscription subscription = subscriptionService.createSubscription(req.getUserId(), req.getStartDateTime());
 
-        SubscriptionCreatedResponse response = new SubscriptionCreatedResponse(
+        SubscriptionResponse response = new SubscriptionResponse(
                 subscription.getId(),
                 subscription.getUserId(),
-                toUTC(subscription.getStartedOn())
+                toUTC(subscription.getStartedOn()),
+                null
         );
 
         return new SuccessResponse<>(response);
@@ -49,7 +51,7 @@ public class SubscriptionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription status"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
-            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+            @ApiResponse(responseCode = "500", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
     })
     @GetMapping(path = "/users/{userId}", produces = SUBSCRIPTION_STATUS)
     public SuccessResponse<SubscriptionStatusResponse> getSubscriptionStatus(@PathVariable("userId") UUID userId) {
@@ -64,17 +66,18 @@ public class SubscriptionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription data"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
-            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+            @ApiResponse(responseCode = "500", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @PatchMapping(path = "/users/{userId}", consumes = REACTIVATING_SUBSCRIPTION, produces = REACTIVATED_SUBSCRIPTION)
-    public SuccessResponse<SubscriptionReactivatedResponse> resubscribeUser(@PathVariable("userId") UUID userId,
-                                                                            @RequestBody @Valid ReactivateSubscriptionRequest req) {
+    @PatchMapping(path = "/users/{userId}", consumes = REACTIVATING_SUBSCRIPTION, produces = SUBSCRIPTION)
+    public SuccessResponse<SubscriptionResponse> resubscribeUser(@PathVariable("userId") UUID userId,
+                                                                 @RequestBody @Valid ReactivateSubscriptionRequest req) {
         Subscription subscription = subscriptionService.resubscribeUser(userId, req.getStartDateTime());
 
-        SubscriptionReactivatedResponse response = new SubscriptionReactivatedResponse(
+        SubscriptionResponse response = new SubscriptionResponse(
                 subscription.getId(),
                 subscription.getUserId(),
-                toUTC(subscription.getStartedOn())
+                toUTC(subscription.getStartedOn()),
+                null
         );
 
         return new SuccessResponse<>(response);
@@ -83,15 +86,16 @@ public class SubscriptionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription data"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
-            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+            @ApiResponse(responseCode = "500", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @PatchMapping(path = "/users/{userId}", consumes = ENDING_SUBSCRIPTION, produces = ENDED_SUBSCRIPTION)
-    public SuccessResponse<SubscriptionEndedResponse> endSubscription(@PathVariable("userId") UUID userId,
-                                                                      @RequestBody @Valid EndSubscriptionRequest req) {
+    @PatchMapping(path = "/users/{userId}", consumes = ENDING_SUBSCRIPTION, produces = SUBSCRIPTION)
+    public SuccessResponse<SubscriptionResponse> endSubscription(@PathVariable("userId") UUID userId,
+                                                                 @RequestBody @Valid EndSubscriptionRequest req) {
         Subscription subscription = subscriptionService.endSubscription(userId, req.getEndDateTime());
 
-        SubscriptionEndedResponse response = new SubscriptionEndedResponse(
-                subscription.getId(), subscription.getUserId(),
+        SubscriptionResponse response = new SubscriptionResponse(
+                subscription.getId(),
+                subscription.getUserId(),
                 toUTC(subscription.getStartedOn()),
                 toUTC(subscription.getEndedOn())
         );
