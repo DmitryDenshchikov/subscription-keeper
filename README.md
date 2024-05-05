@@ -15,3 +15,4 @@
 - Using environment variables to inject passwords, usernames and urls
 - Add spring's profiles usage
 - Create a common swagger config (declare a common api response for error responses)
+- Implement database migrations through either liquibase or flyway

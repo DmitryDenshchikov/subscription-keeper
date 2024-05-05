@@ -31,10 +31,7 @@ public class SubscriptionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription data"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
-            @ApiResponse(
-                    responseCode = "500",
-                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}
-            )
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping(consumes = CREATING_SUBSCRIPTION, produces = CREATED_SUBSCRIPTION)
     public SuccessResponse<SubscriptionCreatedResponse> storeSubscription(@RequestBody @Valid CreateSubscriptionRequest req) {
@@ -52,10 +49,7 @@ public class SubscriptionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription status"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
-            @ApiResponse(
-                    responseCode = "500",
-                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}
-            )
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @GetMapping(path = "/users/{userId}", produces = SUBSCRIPTION_STATUS)
     public SuccessResponse<SubscriptionStatusResponse> getSubscriptionStatus(@PathVariable("userId") UUID userId) {
@@ -70,10 +64,7 @@ public class SubscriptionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription data"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
-            @ApiResponse(
-                    responseCode = "500",
-                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}
-            )
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PatchMapping(path = "/users/{userId}", consumes = REACTIVATING_SUBSCRIPTION, produces = REACTIVATED_SUBSCRIPTION)
     public SuccessResponse<SubscriptionReactivatedResponse> resubscribeUser(@PathVariable("userId") UUID userId,
@@ -92,10 +83,7 @@ public class SubscriptionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription data"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
-            @ApiResponse(
-                    responseCode = "500",
-                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}
-            )
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PatchMapping(path = "/users/{userId}", consumes = ENDING_SUBSCRIPTION, produces = ENDED_SUBSCRIPTION)
     public SuccessResponse<SubscriptionEndedResponse> endSubscription(@PathVariable("userId") UUID userId,

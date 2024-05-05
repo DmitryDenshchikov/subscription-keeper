@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@ToString(callSuper = true)
 public class SubscriptionCreatedResponse extends BaseSubscriptionResponse{
 
     private final ZonedDateTime startedOn;
