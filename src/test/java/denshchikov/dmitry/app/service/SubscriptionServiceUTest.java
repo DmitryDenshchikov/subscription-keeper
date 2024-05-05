@@ -70,6 +70,7 @@ class SubscriptionServiceUTest {
         // Given
         UUID userId = UUID.randomUUID();
         Subscription subscription = TestDataBuilder.aSubscription(userId);
+        subscription.setEndedOn(currentUTC());
 
         given(subscriptionRepository.findByUserIdForUpdate(userId)).willReturn(Optional.of(subscription));
         given(subscriptionRepository.save(any(Subscription.class))).willThrow(RuntimeException.class);

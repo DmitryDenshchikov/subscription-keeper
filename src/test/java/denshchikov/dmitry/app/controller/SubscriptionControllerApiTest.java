@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import static denshchikov.dmitry.app.constant.MediaType.*;
 import static denshchikov.dmitry.app.util.DateUtils.toUTC;
 import static java.time.ZoneOffset.UTC;
 import static org.mockito.BDDMockito.given;
@@ -51,7 +52,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = post("/subscriptions")
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(CREATING_SUBSCRIPTION)
                     .content(requestStr);
 
             UUID subscriptionId = UUID.fromString("ef94bdff-8d32-432a-9444-95890e4b97bd");
@@ -91,7 +92,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = post("/subscriptions")
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(CREATING_SUBSCRIPTION)
                     .content(requestStr);
 
             UUID subscriptionId = UUID.fromString("ef94bdff-8d32-432a-9444-95890e4b97bd");
@@ -176,7 +177,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(REACTIVATING_SUBSCRIPTION)
                     .content(requestStr);
 
             UUID subscriptionId = UUID.fromString("ef94bdff-8d32-432a-9444-95890e4b97bd");
@@ -216,7 +217,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(REACTIVATING_SUBSCRIPTION)
                     .content(requestStr);
 
             UUID subscriptionId = UUID.fromString("ef94bdff-8d32-432a-9444-95890e4b97bd");
@@ -254,9 +255,9 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = put("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(ENDING_SUBSCRIPTION)
                     .content(requestStr);
 
             UUID subscriptionId = UUID.fromString("ef94bdff-8d32-432a-9444-95890e4b97bd");
@@ -298,9 +299,9 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = put("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(ENDING_SUBSCRIPTION)
                     .content(requestStr);
 
             UUID subscriptionId = UUID.fromString("ef94bdff-8d32-432a-9444-95890e4b97bd");
@@ -345,7 +346,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = post("/subscriptions")
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(CREATING_SUBSCRIPTION)
                     .content(requestStr);
 
             // When & Then
@@ -361,7 +362,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = post("/subscriptions")
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(CREATING_SUBSCRIPTION)
                     .content(requestStr);
 
             // When & Then
@@ -389,7 +390,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/12345")
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(REACTIVATING_SUBSCRIPTION)
                     .content(requestStr);
 
             // When & Then
@@ -405,7 +406,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/3fa85f64-5717-4562-b3fc-2c963f66afa6")
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(REACTIVATING_SUBSCRIPTION)
                     .content(requestStr);
 
             // When & Then
@@ -422,9 +423,9 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = put("/subscriptions/users/1234")
+            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/1234")
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(ENDING_SUBSCRIPTION)
                     .content(requestStr);
 
             // When & Then
@@ -440,9 +441,9 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = put("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(ENDING_SUBSCRIPTION)
                     .content(requestStr);
 
             // When & Then
@@ -466,7 +467,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = post("/subscriptions")
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(CREATING_SUBSCRIPTION)
                     .content(requestStr);
 
             given(subscriptionService.createSubscription(userId, subscriptionStartDateTime))
@@ -494,7 +495,6 @@ class SubscriptionControllerApiTest {
         void should_Return500_When_ResubscribingUserAndUpdateSubscriptionStatus() throws Exception {
             // Given
             UUID userId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-            ZonedDateTime subscriptionStartDateTime = ZonedDateTime.parse("2024-05-05T16:29:16.513+03:00");
             ZonedDateTime subscriptionEndDateTime = ZonedDateTime.parse("2024-05-05T17:29:16.513+03:00");
 
             ReactivateSubscriptionRequest request = new ReactivateSubscriptionRequest(subscriptionEndDateTime);
@@ -503,7 +503,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(REACTIVATING_SUBSCRIPTION)
                     .content(requestStr);
 
             given(subscriptionService.resubscribeUser(userId, subscriptionEndDateTime)).willThrow(RuntimeException.class);
@@ -522,9 +522,9 @@ class SubscriptionControllerApiTest {
 
             String requestStr = objectMapper.writeValueAsString(request);
 
-            MockHttpServletRequestBuilder requestBuilder = put("/subscriptions/users/" + userId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/subscriptions/users/" + userId)
                     .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
+                    .contentType(ENDING_SUBSCRIPTION)
                     .content(requestStr);
 
             given(subscriptionService.endSubscription(userId, subscriptionEndDateTime)).willThrow(RuntimeException.class);

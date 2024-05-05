@@ -19,5 +19,5 @@
 - Using env vars to inject passwords and usernames and urls
 - Better exception handling
 - Profiles
-- Cutom media types for versioning
+- Custom media types for return values
 - Create a common swagger config

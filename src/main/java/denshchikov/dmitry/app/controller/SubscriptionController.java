@@ -1,5 +1,6 @@
 package denshchikov.dmitry.app.controller;
 
+import denshchikov.dmitry.app.constant.MediaType;
 import denshchikov.dmitry.app.model.domain.Subscription;
 import denshchikov.dmitry.app.model.request.CreateSubscriptionRequest;
 import denshchikov.dmitry.app.model.request.ReactivateSubscriptionRequest;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.*;
 
+import static denshchikov.dmitry.app.constant.MediaType.*;
 import static denshchikov.dmitry.app.util.DateUtils.toUTC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -38,7 +40,7 @@ public class SubscriptionController {
                                     schema = @Schema(implementation = ErrorResponse.class))}
             )
     })
-    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = CREATING_SUBSCRIPTION, produces = APPLICATION_JSON_VALUE)
     public SuccessResponse<SubscriptionCreatedResponse> storeSubscription(@RequestBody @Valid CreateSubscriptionRequest req) {
         Subscription subscription = subscriptionService.createSubscription(req.getUserId(), req.getStartDateTime());
 
@@ -81,7 +83,7 @@ public class SubscriptionController {
                                     schema = @Schema(implementation = ErrorResponse.class))}
             )
     })
-    @PatchMapping(path = "/users/{userId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/users/{userId}", consumes = REACTIVATING_SUBSCRIPTION, produces = APPLICATION_JSON_VALUE)
     public SuccessResponse<SubscriptionReactivatedResponse> resubscribeUser(@PathVariable("userId") UUID userId,
                                                                             @RequestBody @Valid ReactivateSubscriptionRequest req) {
         Subscription subscription = subscriptionService.resubscribeUser(userId, req.getStartDateTime());
@@ -105,7 +107,7 @@ public class SubscriptionController {
                                     schema = @Schema(implementation = ErrorResponse.class))}
             )
     })
-    @PutMapping(path = "/users/{userId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/users/{userId}", consumes = ENDING_SUBSCRIPTION, produces = APPLICATION_JSON_VALUE)
     public SuccessResponse<SubscriptionEndedResponse> endSubscription(@PathVariable("userId") UUID userId,
                                                                       @RequestBody @Valid EndSubscriptionRequest req) {
         Subscription subscription = subscriptionService.endSubscription(userId, req.getEndDateTime());
