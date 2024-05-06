@@ -8,6 +8,7 @@ import denshchikov.dmitry.app.model.response.common.ErrorResponse;
 import denshchikov.dmitry.app.model.response.common.SuccessResponse;
 import denshchikov.dmitry.app.model.response.subscription.*;
 import denshchikov.dmitry.app.service.SubscriptionService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,6 +32,7 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
+    @Operation(summary = "Store a new subscription (user was subscribed)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription data"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
@@ -49,6 +51,7 @@ public class SubscriptionController {
         return new SuccessResponse<>(response);
     }
 
+    @Operation(summary = "Get a subscription's status")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription status"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
@@ -65,6 +68,7 @@ public class SubscriptionController {
         return new SuccessResponse<>(response);
     }
 
+    @Operation(summary = "Reactivate a subscription (a user had been unsubscribed but then was subscribed again)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription data"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
@@ -84,6 +88,7 @@ public class SubscriptionController {
         return new SuccessResponse<>(response);
     }
 
+    @Operation(summary = "End a subscription (a user was unsubscribed)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription data"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
