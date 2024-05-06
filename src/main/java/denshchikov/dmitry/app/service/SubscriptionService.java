@@ -37,10 +37,27 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public Subscription endSubscription(UUID userId, ZonedDateTime endDateTime) {
+    public Subscription updateSubscription(UUID userId, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
         Objects.requireNonNull(userId, "User Id must not be null");
-        Objects.requireNonNull(endDateTime, "Subscription end date must not be null");
 
+        if ((startDateTime == null && endDateTime == null) || (startDateTime != null && endDateTime != null)) {
+            throw new IllegalArgumentException("Either subscription start date or subscription end date must not be null");
+        } else if (startDateTime != null) {
+            return reactivateSubscription(userId, startDateTime);
+        } else {
+            return endSubscription(userId, endDateTime);
+        }
+    }
+
+    public boolean isSubscribed(UUID userId) {
+        Objects.requireNonNull(userId, "User Id must not be null");
+
+        Optional<Subscription> subscription = subscriptionRepository.findByUserId(userId);
+
+        return subscription.isPresent() && subscription.get().getEndedOn() == null;
+    }
+
+    private Subscription endSubscription(UUID userId, ZonedDateTime endDateTime) {
         Subscription subscription = subscriptionRepository.findByUserIdForUpdate(userId)
                 .orElseThrow(() -> new RuntimeException("No subscription found for user " + userId));
 
@@ -55,11 +72,7 @@ public class SubscriptionService {
         return subscription;
     }
 
-    @Transactional
-    public Subscription resubscribeUser(UUID userId, ZonedDateTime startDateTime) {
-        Objects.requireNonNull(userId, "User Id must not be null");
-        Objects.requireNonNull(startDateTime, "Subscription start date must not be null");
-
+    private Subscription reactivateSubscription(UUID userId, ZonedDateTime startDateTime) {
         Subscription subscription = subscriptionRepository.findByUserIdForUpdate(userId)
                 .orElseThrow(() -> new RuntimeException("No subscription found for user " + userId));
 
@@ -73,14 +86,6 @@ public class SubscriptionService {
         subscription = subscriptionRepository.save(subscription);
 
         return subscription;
-    }
-
-    public boolean isSubscribed(UUID userId) {
-        Objects.requireNonNull(userId, "User Id must not be null");
-
-        Optional<Subscription> subscription = subscriptionRepository.findByUserId(userId);
-
-        return subscription.isPresent() && subscription.get().getEndedOn() == null;
     }
 
 }

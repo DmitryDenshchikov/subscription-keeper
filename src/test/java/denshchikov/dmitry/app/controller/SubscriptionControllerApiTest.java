@@ -3,8 +3,7 @@ package denshchikov.dmitry.app.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import denshchikov.dmitry.app.model.domain.Subscription;
 import denshchikov.dmitry.app.model.request.CreateSubscriptionRequest;
-import denshchikov.dmitry.app.model.request.ReactivateSubscriptionRequest;
-import denshchikov.dmitry.app.model.request.EndSubscriptionRequest;
+import denshchikov.dmitry.app.model.request.UpdateSubscriptionRequest;
 import denshchikov.dmitry.app.service.SubscriptionService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Nested;
@@ -21,6 +20,7 @@ import java.util.UUID;
 import static denshchikov.dmitry.app.constant.MediaType.*;
 import static denshchikov.dmitry.app.util.DateUtils.toUTC;
 import static java.time.ZoneOffset.UTC;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -52,7 +52,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = post("/v1/subscriptions")
                     .accept(SUBSCRIPTION)
-                    .contentType(CREATING_SUBSCRIPTION)
+                    .contentType(CREATE_SUBSCRIPTION)
                     .content(requestStr);
 
             UUID subscriptionId = UUID.fromString("ef94bdff-8d32-432a-9444-95890e4b97bd");
@@ -92,7 +92,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = post("/v1/subscriptions")
                     .accept(SUBSCRIPTION)
-                    .contentType(CREATING_SUBSCRIPTION)
+                    .contentType(CREATE_SUBSCRIPTION)
                     .content(requestStr);
 
             UUID subscriptionId = UUID.fromString("ef94bdff-8d32-432a-9444-95890e4b97bd");
@@ -171,13 +171,13 @@ class SubscriptionControllerApiTest {
             UUID userId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
             ZonedDateTime subscriptionStartDateTime = ZonedDateTime.parse("2024-05-05T16:29:16.513+03:00");
 
-            ReactivateSubscriptionRequest request = new ReactivateSubscriptionRequest(subscriptionStartDateTime);
+            UpdateSubscriptionRequest request = new UpdateSubscriptionRequest(subscriptionStartDateTime, null);
 
             String requestStr = objectMapper.writeValueAsString(request);
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(SUBSCRIPTION)
-                    .contentType(REACTIVATING_SUBSCRIPTION)
+                    .contentType(UPDATE_SUBSCRIPTION)
                     .content(requestStr);
 
             UUID subscriptionId = UUID.fromString("ef94bdff-8d32-432a-9444-95890e4b97bd");
@@ -187,7 +187,7 @@ class SubscriptionControllerApiTest {
             subscription.setUserId(userId);
             subscription.setStartedOn(toUTC(subscriptionStartDateTime));
 
-            given(subscriptionService.resubscribeUser(userId, subscriptionStartDateTime)).willReturn(subscription);
+            given(subscriptionService.updateSubscription(userId, subscriptionStartDateTime, null)).willReturn(subscription);
 
             // When & Then
             mockMvc.perform(requestBuilder)
@@ -211,13 +211,13 @@ class SubscriptionControllerApiTest {
             ZonedDateTime subscriptionStartDateTime = ZonedDateTime.parse("2024-05-05T16:29:16.513+03:00")
                     .withZoneSameInstant(UTC);
 
-            ReactivateSubscriptionRequest request = new ReactivateSubscriptionRequest(subscriptionStartDateTime);
+            UpdateSubscriptionRequest request = new UpdateSubscriptionRequest(subscriptionStartDateTime, null);
 
             String requestStr = objectMapper.writeValueAsString(request);
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(SUBSCRIPTION)
-                    .contentType(REACTIVATING_SUBSCRIPTION)
+                    .contentType(UPDATE_SUBSCRIPTION)
                     .content(requestStr);
 
             UUID subscriptionId = UUID.fromString("ef94bdff-8d32-432a-9444-95890e4b97bd");
@@ -227,7 +227,7 @@ class SubscriptionControllerApiTest {
             subscription.setUserId(userId);
             subscription.setStartedOn(toUTC(subscriptionStartDateTime));
 
-            given(subscriptionService.resubscribeUser(userId, subscriptionStartDateTime)).willReturn(subscription);
+            given(subscriptionService.updateSubscription(userId, subscriptionStartDateTime, null)).willReturn(subscription);
 
             // When & Then
             mockMvc.perform(requestBuilder)
@@ -251,13 +251,13 @@ class SubscriptionControllerApiTest {
             ZonedDateTime subscriptionStartDateTime = ZonedDateTime.parse("2024-05-05T16:29:16.513+03:00");
             ZonedDateTime subscriptionEndDateTime = ZonedDateTime.parse("2024-05-05T17:29:16.513+03:00");
 
-            EndSubscriptionRequest request = new EndSubscriptionRequest(subscriptionEndDateTime);
+            UpdateSubscriptionRequest request = new UpdateSubscriptionRequest(null, subscriptionEndDateTime);
 
             String requestStr = objectMapper.writeValueAsString(request);
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(SUBSCRIPTION)
-                    .contentType(ENDING_SUBSCRIPTION)
+                    .contentType(UPDATE_SUBSCRIPTION)
                     .content(requestStr);
 
             UUID subscriptionId = UUID.fromString("ef94bdff-8d32-432a-9444-95890e4b97bd");
@@ -268,7 +268,7 @@ class SubscriptionControllerApiTest {
             subscription.setStartedOn(toUTC(subscriptionStartDateTime));
             subscription.setEndedOn(toUTC(subscriptionEndDateTime));
 
-            given(subscriptionService.endSubscription(userId, subscriptionEndDateTime)).willReturn(subscription);
+            given(subscriptionService.updateSubscription(userId, null, subscriptionEndDateTime)).willReturn(subscription);
 
             // When & Then
             mockMvc.perform(requestBuilder)
@@ -295,13 +295,13 @@ class SubscriptionControllerApiTest {
             ZonedDateTime subscriptionEndDateTime = ZonedDateTime.parse("2024-05-05T17:29:16.513+03:00")
                     .withZoneSameInstant(UTC);
 
-            EndSubscriptionRequest request = new EndSubscriptionRequest(subscriptionEndDateTime);
+            UpdateSubscriptionRequest request = new UpdateSubscriptionRequest(null, subscriptionEndDateTime);
 
             String requestStr = objectMapper.writeValueAsString(request);
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(SUBSCRIPTION)
-                    .contentType(ENDING_SUBSCRIPTION)
+                    .contentType(UPDATE_SUBSCRIPTION)
                     .content(requestStr);
 
             UUID subscriptionId = UUID.fromString("ef94bdff-8d32-432a-9444-95890e4b97bd");
@@ -312,7 +312,7 @@ class SubscriptionControllerApiTest {
             subscription.setStartedOn(toUTC(subscriptionStartDateTime));
             subscription.setEndedOn(toUTC(subscriptionEndDateTime));
 
-            given(subscriptionService.endSubscription(userId, subscriptionEndDateTime)).willReturn(subscription);
+            given(subscriptionService.updateSubscription(userId, null, subscriptionEndDateTime)).willReturn(subscription);
 
             // When & Then
             mockMvc.perform(requestBuilder)
@@ -346,7 +346,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = post("/v1/subscriptions")
                     .accept(SUBSCRIPTION)
-                    .contentType(CREATING_SUBSCRIPTION)
+                    .contentType(CREATE_SUBSCRIPTION)
                     .content(requestStr);
 
             // When & Then
@@ -362,7 +362,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = post("/v1/subscriptions")
                     .accept(SUBSCRIPTION)
-                    .contentType(CREATING_SUBSCRIPTION)
+                    .contentType(CREATE_SUBSCRIPTION)
                     .content(requestStr);
 
             // When & Then
@@ -382,31 +382,15 @@ class SubscriptionControllerApiTest {
         @Test
         void should_Return400_When_ResubscribingUserAndUserIdIsNotUUID() throws Exception {
             // Given
-            ZonedDateTime subscriptionEndDateTime = ZonedDateTime.parse("2024-05-05T17:29:16.513+03:00");
+            ZonedDateTime subscriptionStartDateTime = ZonedDateTime.parse("2024-05-05T17:29:16.513+03:00");
 
-            ReactivateSubscriptionRequest request = new ReactivateSubscriptionRequest(subscriptionEndDateTime);
+            UpdateSubscriptionRequest request = new UpdateSubscriptionRequest(subscriptionStartDateTime, null);
 
             String requestStr = objectMapper.writeValueAsString(request);
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/12345")
                     .accept(SUBSCRIPTION)
-                    .contentType(REACTIVATING_SUBSCRIPTION)
-                    .content(requestStr);
-
-            // When & Then
-            validate400(requestBuilder);
-        }
-
-        @Test
-        void should_Return400_When_ResubscribingUserAndStartDateIsNull() throws Exception {
-            // Given
-            ReactivateSubscriptionRequest request = new ReactivateSubscriptionRequest(null);
-
-            String requestStr = objectMapper.writeValueAsString(request);
-
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/3fa85f64-5717-4562-b3fc-2c963f66afa6")
-                    .accept(SUBSCRIPTION)
-                    .contentType(REACTIVATING_SUBSCRIPTION)
+                    .contentType(UPDATE_SUBSCRIPTION)
                     .content(requestStr);
 
             // When & Then
@@ -419,31 +403,13 @@ class SubscriptionControllerApiTest {
             ZonedDateTime subscriptionEndDateTime = ZonedDateTime.parse("2024-05-05T17:29:16.513+03:00")
                     .withZoneSameInstant(UTC);
 
-            EndSubscriptionRequest request = new EndSubscriptionRequest(subscriptionEndDateTime);
+            UpdateSubscriptionRequest request = new UpdateSubscriptionRequest(null, subscriptionEndDateTime);
 
             String requestStr = objectMapper.writeValueAsString(request);
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/1234")
                     .accept(SUBSCRIPTION)
-                    .contentType(ENDING_SUBSCRIPTION)
-                    .content(requestStr);
-
-            // When & Then
-            validate400(requestBuilder);
-        }
-
-        @Test
-        void should_Return400_When_EndingSubscriptionAndSubscriptionEndDateIsNull() throws Exception {
-            // Given
-            UUID userId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-
-            EndSubscriptionRequest request = new EndSubscriptionRequest(null);
-
-            String requestStr = objectMapper.writeValueAsString(request);
-
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
-                    .accept(SUBSCRIPTION)
-                    .contentType(ENDING_SUBSCRIPTION)
+                    .contentType(UPDATE_SUBSCRIPTION)
                     .content(requestStr);
 
             // When & Then
@@ -467,7 +433,7 @@ class SubscriptionControllerApiTest {
 
             MockHttpServletRequestBuilder requestBuilder = post("/v1/subscriptions")
                     .accept(SUBSCRIPTION)
-                    .contentType(CREATING_SUBSCRIPTION)
+                    .contentType(CREATE_SUBSCRIPTION)
                     .content(requestStr);
 
             given(subscriptionService.createSubscription(userId, subscriptionStartDateTime))
@@ -495,18 +461,18 @@ class SubscriptionControllerApiTest {
         void should_Return500_When_ResubscribingUserAndUpdateSubscriptionStatus() throws Exception {
             // Given
             UUID userId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-            ZonedDateTime subscriptionEndDateTime = ZonedDateTime.parse("2024-05-05T17:29:16.513+03:00");
+            ZonedDateTime subscriptionStartDateTime = ZonedDateTime.parse("2024-05-05T17:29:16.513+03:00");
 
-            ReactivateSubscriptionRequest request = new ReactivateSubscriptionRequest(subscriptionEndDateTime);
+            UpdateSubscriptionRequest request = new UpdateSubscriptionRequest(subscriptionStartDateTime, null);
 
             String requestStr = objectMapper.writeValueAsString(request);
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(SUBSCRIPTION)
-                    .contentType(REACTIVATING_SUBSCRIPTION)
+                    .contentType(UPDATE_SUBSCRIPTION)
                     .content(requestStr);
 
-            given(subscriptionService.resubscribeUser(userId, subscriptionEndDateTime)).willThrow(RuntimeException.class);
+            given(subscriptionService.updateSubscription(userId, subscriptionStartDateTime, null)).willThrow(RuntimeException.class);
 
             // When & Then
             validate500(requestBuilder);
@@ -518,16 +484,39 @@ class SubscriptionControllerApiTest {
             UUID userId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
             ZonedDateTime subscriptionEndDateTime = ZonedDateTime.parse("2024-05-05T17:29:16.513+03:00");
 
-            EndSubscriptionRequest request = new EndSubscriptionRequest(subscriptionEndDateTime);
+            UpdateSubscriptionRequest request = new UpdateSubscriptionRequest(null, subscriptionEndDateTime);
 
             String requestStr = objectMapper.writeValueAsString(request);
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
                     .accept(SUBSCRIPTION)
-                    .contentType(ENDING_SUBSCRIPTION)
+                    .contentType(UPDATE_SUBSCRIPTION)
                     .content(requestStr);
 
-            given(subscriptionService.endSubscription(userId, subscriptionEndDateTime)).willThrow(RuntimeException.class);
+            given(subscriptionService.updateSubscription(userId, null, subscriptionEndDateTime)).willThrow(RuntimeException.class);
+
+            // When & Then
+            validate500(requestBuilder);
+        }
+
+        @Test
+        void should_Return500_When_UpdatingSubscriptionAndBothDatesArePresent() throws Exception {
+            // Given
+            UUID userId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+            ZonedDateTime subscriptionStartDateTime = ZonedDateTime.parse("2024-05-05T16:29:16.513+03:00");
+            ZonedDateTime subscriptionEndDateTime = ZonedDateTime.parse("2024-05-05T17:29:16.513+03:00");
+
+            UpdateSubscriptionRequest request = new UpdateSubscriptionRequest(subscriptionStartDateTime, subscriptionEndDateTime);
+
+            String requestStr = objectMapper.writeValueAsString(request);
+
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/subscriptions/users/" + userId)
+                    .accept(SUBSCRIPTION)
+                    .contentType(UPDATE_SUBSCRIPTION)
+                    .content(requestStr);
+
+            given(subscriptionService.updateSubscription(userId, subscriptionStartDateTime, subscriptionEndDateTime))
+                    .willThrow(IllegalArgumentException.class);
 
             // When & Then
             validate500(requestBuilder);

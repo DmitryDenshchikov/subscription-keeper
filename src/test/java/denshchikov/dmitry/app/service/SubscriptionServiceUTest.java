@@ -40,7 +40,7 @@ class SubscriptionServiceUTest {
     }
 
     @Test
-    void unsubscribeUse_Should_ThrowException_When_ErrorOccurredDuringUpdatingSubscription() {
+    void updateSubscription_Should_ThrowException_When_EndingSubscriptionAndErrorOccurredDuringUpdatingSubscription() {
         // Given
         UUID userId = UUID.randomUUID();
         Subscription subscription = TestDataBuilder.aSubscription(userId);
@@ -49,24 +49,24 @@ class SubscriptionServiceUTest {
         given(subscriptionRepository.save(any(Subscription.class))).willThrow(RuntimeException.class);
 
         // When & Then
-        thenThrownBy(() -> subscriptionService.endSubscription(userId, currentUTC().atZone(UTC)))
+        thenThrownBy(() -> subscriptionService.updateSubscription(userId, null, currentUTC().atZone(UTC)))
                 .isInstanceOf(RuntimeException.class);
     }
 
     @Test
-    void unsubscribeUse_Should_ThrowException_When_ErrorOccurredDuringFindingSubscription() {
+    void unsubscribeUse_Should_ThrowException_When_EndingSubscriptionAndErrorOccurredDuringFindingSubscription() {
         // Given
         UUID userId = UUID.randomUUID();
 
         given(subscriptionRepository.findByUserIdForUpdate(userId)).willThrow(RuntimeException.class);
 
         // When & Then
-        thenThrownBy(() -> subscriptionService.endSubscription(userId, currentUTC().atZone(UTC)))
+        thenThrownBy(() -> subscriptionService.updateSubscription(userId, null, currentUTC().atZone(UTC)))
                 .isInstanceOf(RuntimeException.class);
     }
 
     @Test
-    void resubscribeUser_Should_ThrowException_When_ErrorOccurredDuringUpdatingSubscription() {
+    void updateSubscription_Should_ThrowException_When_ReactivatingSubscriptionAndErrorOccurredDuringUpdatingSubscription() {
         // Given
         UUID userId = UUID.randomUUID();
         Subscription subscription = TestDataBuilder.aSubscription(userId);
@@ -76,19 +76,19 @@ class SubscriptionServiceUTest {
         given(subscriptionRepository.save(any(Subscription.class))).willThrow(RuntimeException.class);
 
         // When & Then
-        thenThrownBy(() -> subscriptionService.resubscribeUser(userId, currentUTC().atZone(UTC)))
+        thenThrownBy(() -> subscriptionService.updateSubscription(userId, currentUTC().atZone(UTC), null))
                 .isInstanceOf(RuntimeException.class);
     }
 
     @Test
-    void resubscribeUser_Should_ThrowException_When_ErrorOccurredDuringFindingSubscription() {
+    void updateSubscription_Should_ThrowException_When_ReactivatingSubscriptionAndErrorOccurredDuringFindingSubscription() {
         // Given
         UUID userId = UUID.randomUUID();
 
         given(subscriptionRepository.findByUserIdForUpdate(userId)).willThrow(RuntimeException.class);
 
         // When & Then
-        thenThrownBy(() -> subscriptionService.resubscribeUser(userId, currentUTC().atZone(UTC)))
+        thenThrownBy(() -> subscriptionService.updateSubscription(userId, currentUTC().atZone(UTC), null))
                 .isInstanceOf(RuntimeException.class);
     }
 

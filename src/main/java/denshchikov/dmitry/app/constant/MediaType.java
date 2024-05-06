@@ -2,9 +2,8 @@ package denshchikov.dmitry.app.constant;
 
 public final class MediaType {
 
-    public static final String CREATING_SUBSCRIPTION = "application/vnd.prs.v1.creating-subscription+json";
-    public static final String ENDING_SUBSCRIPTION = "application/vnd.prs.v1.ending-subscription+json";
-    public static final String REACTIVATING_SUBSCRIPTION = "application/vnd.prs.v1.reactivating-subscription+json";
+    public static final String CREATE_SUBSCRIPTION = "application/vnd.prs.v1.create-subscription+json";
+    public static final String UPDATE_SUBSCRIPTION = "application/vnd.prs.v1.update-subscription+json";
 
     public static final String SUBSCRIPTION = "application/vnd.prs.v1.subscription+json";
     public static final String SUBSCRIPTION_STATUS = "application/vnd.prs.v1.subscription-status+json";

@@ -2,8 +2,7 @@ package denshchikov.dmitry.app.controller;
 
 import denshchikov.dmitry.app.model.domain.Subscription;
 import denshchikov.dmitry.app.model.request.CreateSubscriptionRequest;
-import denshchikov.dmitry.app.model.request.ReactivateSubscriptionRequest;
-import denshchikov.dmitry.app.model.request.EndSubscriptionRequest;
+import denshchikov.dmitry.app.model.request.UpdateSubscriptionRequest;
 import denshchikov.dmitry.app.model.response.common.ErrorResponse;
 import denshchikov.dmitry.app.model.response.common.SuccessResponse;
 import denshchikov.dmitry.app.model.response.subscription.*;
@@ -17,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static denshchikov.dmitry.app.constant.MediaType.*;
@@ -38,7 +38,7 @@ public class SubscriptionController {
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
             @ApiResponse(responseCode = "500", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @PostMapping(consumes = CREATING_SUBSCRIPTION, produces = SUBSCRIPTION)
+    @PostMapping(consumes = CREATE_SUBSCRIPTION, produces = SUBSCRIPTION)
     public SuccessResponse<SubscriptionResponse> storeSubscription(@RequestBody @Valid CreateSubscriptionRequest req) {
         Subscription subscription = subscriptionService.createSubscription(req.getUserId(), req.getStartDateTime());
 
@@ -68,42 +68,27 @@ public class SubscriptionController {
         return new SuccessResponse<>(response);
     }
 
-    @Operation(summary = "Reactivate a subscription (a user had been unsubscribed but then was subscribed again)")
+    @Operation(summary = "End a subscription (a user was unsubscribed) or reactivate it (a user had been unsubscribed but then was subscribed again)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subscription data"),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
             @ApiResponse(responseCode = "500", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @PatchMapping(path = "/users/{userId}", consumes = REACTIVATING_SUBSCRIPTION, produces = SUBSCRIPTION)
-    public SuccessResponse<SubscriptionResponse> resubscribeUser(@PathVariable("userId") UUID userId,
-                                                                 @RequestBody @Valid ReactivateSubscriptionRequest req) {
-        Subscription subscription = subscriptionService.resubscribeUser(userId, req.getStartDateTime());
+    @PatchMapping(path = "/users/{userId}", consumes = UPDATE_SUBSCRIPTION, produces = SUBSCRIPTION)
+    public SuccessResponse<SubscriptionResponse> updateSubscription(@PathVariable("userId") UUID userId,
+                                                                    @RequestBody @Valid UpdateSubscriptionRequest req) {
+
+        Subscription subscription = subscriptionService.updateSubscription(
+                userId, req.getStartDateTime(), req.getEndDateTime());
+
+        LocalDateTime subscriptionStartDateTime = subscription.getStartedOn();
+        LocalDateTime subscriptionEndDateTime = subscription.getEndedOn();
 
         SubscriptionResponse response = SubscriptionResponse.builder()
                 .id(subscription.getId())
                 .userId(subscription.getUserId())
-                .startedOn(toUTC(subscription.getStartedOn()))
-                .build();
-
-        return new SuccessResponse<>(response);
-    }
-
-    @Operation(summary = "End a subscription (a user was unsubscribed)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Subscription data"),
-            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content()),
-            @ApiResponse(responseCode = "500", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
-    })
-    @PatchMapping(path = "/users/{userId}", consumes = ENDING_SUBSCRIPTION, produces = SUBSCRIPTION)
-    public SuccessResponse<SubscriptionResponse> endSubscription(@PathVariable("userId") UUID userId,
-                                                                 @RequestBody @Valid EndSubscriptionRequest req) {
-        Subscription subscription = subscriptionService.endSubscription(userId, req.getEndDateTime());
-
-        SubscriptionResponse response = SubscriptionResponse.builder()
-                .id(subscription.getId())
-                .userId(subscription.getUserId())
-                .startedOn(toUTC(subscription.getStartedOn()))
-                .endedOn(toUTC(subscription.getEndedOn()))
+                .startedOn(subscriptionStartDateTime == null ? null : toUTC(subscriptionStartDateTime))
+                .endedOn(subscriptionEndDateTime == null ? null : toUTC(subscriptionEndDateTime))
                 .build();
 
         return new SuccessResponse<>(response);
