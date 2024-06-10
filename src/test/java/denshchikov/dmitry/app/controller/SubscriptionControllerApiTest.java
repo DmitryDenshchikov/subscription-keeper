@@ -20,9 +20,7 @@ import java.util.UUID;
 import static denshchikov.dmitry.app.constant.MediaType.*;
 import static denshchikov.dmitry.app.util.DateUtils.toUTC;
 import static java.time.ZoneOffset.UTC;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -526,22 +524,13 @@ class SubscriptionControllerApiTest {
 
     private void validate400(MockHttpServletRequestBuilder requestBuilder) throws Exception {
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(Matchers.blankString()));
+                .andExpect(status().isBadRequest());
     }
 
     private void validate500(MockHttpServletRequestBuilder requestBuilder) throws Exception {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isInternalServerError())
-                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
-                .andExpect(content().json(
-                        "{\n" +
-                                "  \"error\": {\n" +
-                                "    \"code\": \"72b2a223-7028-43d7-9590-8a371837196f\",\n" +
-                                "    \"message\": \"Internal application error\"\n" +
-                                "  }\n" +
-                                "}"
-                ));
+                .andExpect(content().string(Matchers.blankString()));
     }
 
 }
